@@ -13,18 +13,12 @@ interface ProductRepository
     public function create(Product $product): Product;
     public function update(int $productId, Product $product): void;
     public function deleteById(int $id): void;
-
-    /**
-     * @param Product[]
-     * @return Product[]
-     */
     public function getBetween(\DateTime $start, \DateTime $end): array;
 
     /**
      * @param Product[]
-     * @return Product[]
      */
-    public function createMany(array $product): array;
+    public function createMany(array $product): void;
 
     /**
      * @param Product[]

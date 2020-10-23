@@ -52,9 +52,14 @@ class ProductEloquentRepository implements ProductRepository
         // TODO: Implement getBetween() method.
     }
 
-    public function createMany(array $product): array
+
+    /**
+     * @param Product[]
+     * @return Product[]
+     */
+    public function createMany(array $products): void
     {
-        // TODO: Implement createMany() method.
+        $this->productModel->createMany($products);
     }
 
     public function updateMany(array $product): array

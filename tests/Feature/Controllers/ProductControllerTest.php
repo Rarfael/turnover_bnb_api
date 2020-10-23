@@ -79,4 +79,19 @@ class ProductControllerTest extends TestCase
             ->assertStatus(200);
         $this->assertDatabaseMissing('products', $product->toArray());
     }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_should_create_a_many_products_in_database()
+    {
+        $products = factory(ProductModel::class, 4)->make()->toArray();
+        $this->post('api/products', $products)
+            ->assertStatus(200);
+
+        foreach ($products as $product) {
+            $this->assertDatabaseHas('products', $product);
+        }
+    }
 }

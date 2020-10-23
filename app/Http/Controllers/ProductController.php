@@ -35,7 +35,11 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->productRepository->create(Product::make($request->all()))->toArray();
+        $products = $request->all();
+        if (!is_array(reset($products))) {
+            return $this->productRepository->create(Product::make($request->all()))->toArray();
+        }
+        $this->productRepository->createMany($request->all());
     }
 
     /**
