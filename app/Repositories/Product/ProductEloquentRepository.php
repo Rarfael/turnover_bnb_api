@@ -37,14 +37,14 @@ class ProductEloquentRepository implements ProductRepository
         return Product::make($newProduct->toArray());
     }
 
-    public function update($productId): array
+    public function update(int $productId, Product $product): void
     {
-        // TODO: Implement update() method.
+        $this->productModel->find($productId)->update($product->toArray());
     }
 
     public function deleteById(int $id): void
     {
-        // TODO: Implement deleteById() method.
+        $this->productModel->find($id)->delete();
     }
 
     public function getBetween(\DateTime $start, \DateTime $end): array

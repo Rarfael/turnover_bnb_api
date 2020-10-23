@@ -75,7 +75,8 @@ class Product
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'price' => $this->price->toArray(),
+            'price' => $this->price->price(),
+            'currency' => $this->price->currency()
         ];
     }
 }

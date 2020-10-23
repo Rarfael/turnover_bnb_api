@@ -11,7 +11,7 @@ interface ProductRepository
     public function all(): array;
     public function findById(int $id): Product;
     public function create(Product $product): Product;
-    public function update($productId): array;
+    public function update(int $productId, Product $product): void;
     public function deleteById(int $id): void;
 
     /**
