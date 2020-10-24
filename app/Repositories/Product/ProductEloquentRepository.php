@@ -7,6 +7,7 @@ namespace App\Repositories\Product;
 use App\Domain\Product\Product;
 use App\Domain\Product\ProductRepository;
 use App\Product as ProductModel;
+use Illuminate\Support\Facades\DB;
 
 class ProductEloquentRepository implements ProductRepository
 {
@@ -55,15 +56,23 @@ class ProductEloquentRepository implements ProductRepository
 
     /**
      * @param Product[]
-     * @return Product[]
      */
     public function createMany(array $products): void
     {
         $this->productModel->createMany($products);
     }
 
-    public function updateMany(array $product): array
+    /**
+     * @param Product[]
+     */
+    public function updateMany(array $products): void
     {
-        // TODO: Implement updateMany() method.
+        DB::beginTransaction();
+        foreach ($products as $product) {
+            if (!empty($product['id'])) {
+                $this->productModel->where('id', $product['id'])->update($product);
+            }
+        }
+        DB::commit();
     }
 }

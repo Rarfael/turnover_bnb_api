@@ -94,4 +94,23 @@ class ProductControllerTest extends TestCase
             $this->assertDatabaseHas('products', $product);
         }
     }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_should_update_a_many_products_in_database()
+    {
+        $products = ProductModel::all()->map(function ($product) {
+            return Product::make($product->toArray())
+                ->setPrice(new Money('BRL', 1200))
+                ->toArray();
+        })->toArray();
+        $this->put('api/mass-update/products', $products)
+            ->assertStatus(200);
+
+        foreach ($products as $product) {
+            $this->assertDatabaseHas('products', $product);
+        }
+    }
 }

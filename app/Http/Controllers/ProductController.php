@@ -75,4 +75,9 @@ class ProductController extends Controller
     {
         return $this->productRepository->deleteById($id);
     }
+
+    public function massUpdate(Request $request)
+    {
+        $this->productRepository->updateMany($request->all());
+    }
 }

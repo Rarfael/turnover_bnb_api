@@ -22,7 +22,6 @@ interface ProductRepository
 
     /**
      * @param Product[]
-     * @return Product[]
      */
-    public function updateMany(array $product): array;
+    public function updateMany(array $product): void;
 }
