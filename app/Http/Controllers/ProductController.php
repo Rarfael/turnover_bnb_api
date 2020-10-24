@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Domain\Product\Product;
 use App\Domain\Product\ProductRepository;
-use App\Repositories\Product\ProductEloquentRepository;
+use App\Http\Requests\CreateProduct;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-
-    private ProductEloquentRepository $productRepository;
+    private ProductRepository $productRepository;
 
     public function __construct(ProductRepository $productRepository)
     {
@@ -20,7 +19,6 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -29,15 +27,14 @@ class ProductController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param CreateProduct $request
+     * @return array
      */
-    public function store(Request $request)
+    public function store(CreateProduct $request)
     {
         $products = $request->all();
-        if (!is_array(reset($products))) {
-            return $this->productRepository->create(Product::make($request->all()))->toArray();
+        if (sizeof($products) === 1 && is_array(reset($products))) {
+            return $this->productRepository->create(Product::make($products[0]))->toArray();
         }
         $this->productRepository->createMany($request->all());
     }
@@ -46,7 +43,7 @@ class ProductController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function show(int $id)
     {

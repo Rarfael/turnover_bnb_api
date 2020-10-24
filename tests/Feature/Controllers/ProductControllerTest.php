@@ -31,7 +31,7 @@ class ProductControllerTest extends TestCase
     public function it_should_create_a_new_product_in_database()
     {
         $product = factory(ProductModel::class)->make()->toArray();
-        $this->post('api/products', $product)
+        $this->post('api/products', [$product])
             ->assertStatus(200);
         $this->assertDatabaseHas('products', $product);
     }
@@ -84,7 +84,7 @@ class ProductControllerTest extends TestCase
      * @test
      * @return void
      */
-    public function it_should_create_a_many_products_in_database()
+    public function it_should_create_many_products_in_database()
     {
         $products = factory(ProductModel::class, 4)->make()->toArray();
         $this->post('api/products', $products)
@@ -113,4 +113,13 @@ class ProductControllerTest extends TestCase
             $this->assertDatabaseHas('products', $product);
         }
     }
+
+//    public function test_invalid_field_product_name()
+//    {
+//        $product = factory(ProductModel::class)->make(['name' => ''])->toArray();
+//        dd($product);
+//        $this->post('api/products', [$product])
+//            ->assertStatus(322)
+//            ->assertJsonValidationErrors([]);
+//    }
 }
