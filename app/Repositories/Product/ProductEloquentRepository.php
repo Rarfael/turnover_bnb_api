@@ -7,6 +7,7 @@ namespace App\Repositories\Product;
 use App\Domain\Product\Product;
 use App\Domain\Product\ProductRepository;
 use App\Product as ProductModel;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ProductEloquentRepository implements ProductRepository
@@ -48,9 +49,9 @@ class ProductEloquentRepository implements ProductRepository
         $this->productModel->find($id)->delete();
     }
 
-    public function getBetween(\DateTime $start, \DateTime $end): array
+    public function getBetween(Carbon $start, Carbon $end): array
     {
-        // TODO: Implement getBetween() method.
+        return $this->productModel->whereBetween('created_at', [$start, $end])->get()->toArray();
     }
 
 

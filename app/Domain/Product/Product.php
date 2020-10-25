@@ -12,13 +12,17 @@ class Product
     private string $name;
     private string $description;
     private Money $price;
+    private ?string $created_at;
+    private ?string $updated_at;
 
-    public function __construct(?int $id, string $name, string $description, Money $price)
+    public function __construct(?int $id, string $name, string $description, Money $price, ?string $created_at, ?string $updated_at)
     {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->price = $price;
+        $this->created_at = $created_at;
+        $this->updated_at = $updated_at;
     }
 
     public static function make(array $product): Product
@@ -27,11 +31,13 @@ class Product
             $product['id'] ?? null,
             $product['name'],
             $product['description'],
-            new Money($product['currency'], $product['price'])
+            new Money($product['currency'], $product['price']),
+            $product['created_at'] ?? null,
+            $product['updated_at'] ?? null
         );
     }
 
-    public function id(): int
+    public function id(): ?int
     {
         return $this->id;
     }
@@ -44,6 +50,16 @@ class Product
     public function description(): string
     {
         return $this->description;
+    }
+
+    public function createdAt(): ?string
+    {
+        return $this->created_at;
+    }
+
+    public function updatedAt(): ?string
+    {
+        return $this->updated_at;
     }
 
     public function setName(string $name): Product
@@ -76,7 +92,9 @@ class Product
             'name' => $this->name,
             'description' => $this->description,
             'price' => $this->price->price(),
-            'currency' => $this->price->currency()
+            'currency' => $this->price->currency(),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

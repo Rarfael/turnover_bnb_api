@@ -4,6 +4,8 @@
 namespace App\Domain\Product;
 
 
+use Carbon\Carbon;
+
 interface ProductRepository
 {
 
@@ -13,7 +15,7 @@ interface ProductRepository
     public function create(Product $product): Product;
     public function update(int $productId, Product $product): void;
     public function deleteById(int $id): void;
-    public function getBetween(\DateTime $start, \DateTime $end): array;
+    public function getBetween(Carbon $start, Carbon $end): array;
 
     /**
      * @param Product[]

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Domain\Product\Product;
 use App\Domain\Product\ProductRepository;
 use App\Http\Requests\CreateProduct;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -76,5 +77,12 @@ class ProductController extends Controller
     public function massUpdate(Request $request)
     {
         $this->productRepository->updateMany($request->all());
+    }
+
+    public function getBetween(Request $request)
+    {
+        $startDate = new Carbon($request->get('start_date'));
+        $endDate = new Carbon($request->get('end_date'));
+        return $this->productRepository->getBetween($startDate, $endDate);
     }
 }

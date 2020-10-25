@@ -10,4 +10,5 @@
 |
 */
 Route::apiResource('/products', 'ProductController');
+Route::get('/filter/products', 'ProductController@getBetween');
 Route::put('/mass-update/products', 'ProductController@massUpdate');

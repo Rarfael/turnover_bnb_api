@@ -5,10 +5,14 @@ namespace Tests\Feature\Controllers;
 use App\Domain\Money;
 use App\Domain\Product\Product;
 use App\Product as ProductModel;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * @test
      * @return void
@@ -45,7 +49,7 @@ class ProductControllerTest extends TestCase
         $productModel = factory(ProductModel::class)->create();
         $product = Product::make($productModel->toArray());
 
-        $this->get("api/products/$productModel->id")
+        $response = $this->get("api/products/$productModel->id")
             ->assertStatus(200)
             ->assertExactJson($product->toArray());
     }
@@ -114,12 +118,48 @@ class ProductControllerTest extends TestCase
         }
     }
 
-//    public function test_invalid_field_product_name()
-//    {
-//        $product = factory(ProductModel::class)->make(['name' => ''])->toArray();
-//        dd($product);
-//        $this->post('api/products', [$product])
-//            ->assertStatus(322)
-//            ->assertJsonValidationErrors([]);
-//    }
+    /**
+     * @test
+     * @return void
+     */
+    public function it_should_filter_product_data_by_date()
+    {
+        $this->refreshTestDatabase();
+        $baseDateTimeString = '2020-10-24 23:38:45';
+        $baseDateTime = new Carbon($baseDateTimeString);
+        $dayAfter = $baseDateTime->copy()->addDay();
+
+        $productsBaseDateTime = factory(ProductModel::class, 3)->create(['created_at' => $baseDateTime]);
+        $productsFromDayAfter = factory(ProductModel::class, 3)->create(['created_at' => $dayAfter]);
+
+        $startOfDayAfter = $dayAfter->startOfDay()->toDateTimeLocalString();
+        $endOfDayAfter = $dayAfter->copy()->endOfDay()->toDateTimeLocalString();
+
+        $this->get("api/filter/products?start_date={$startOfDayAfter}&end_date={$endOfDayAfter}")
+            ->assertStatus(200)
+            ->assertJsonMissing($productsBaseDateTime->toArray())
+            ->assertJson($productsFromDayAfter->toArray());
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function it_should_filter_product_data_by_date_time()
+    {
+        $baseDateTimeString = '2020-10-24 20:00:00';
+        $baseDateTime = new Carbon($baseDateTimeString);
+        $twoHourAfter = $baseDateTime->copy()->addHours(2);
+
+        $productsBaseDateTime = factory(ProductModel::class, 3)->create(['created_at' => $baseDateTime]);
+        $productsHourLater = factory(ProductModel::class, 2)->create(['created_at' => $twoHourAfter]);
+
+        $oneHourLater = $baseDateTime->copy()->addHour()->toDateTimeLocalString();
+        $twoHourLater= $twoHourAfter->toDateTimeLocalString();
+
+        $this->get("api/filter/products?start_date={$oneHourLater}&end_date={$twoHourLater}")
+            ->assertStatus(200)
+            ->assertJsonMissing($productsBaseDateTime->toArray())
+            ->assertJson($productsHourLater->toArray());
+    }
 }
